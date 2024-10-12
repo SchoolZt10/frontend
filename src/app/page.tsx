@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import { MapPin, Clock, Phone, Mail } from 'lucide-react'
+import Image from 'next/image'
 
 export default function SchoolWebsite() {
   return (
@@ -25,8 +26,10 @@ export default function SchoolWebsite() {
                 'http://newztschool10.zzz.com.ua/wp-content/uploads/2022/10/IMG_20210512_094103-768x737.jpg',
               ].map((src, index) => (
                 <CarouselItem key={index}>
-                  <img
+                  <Image
                     src={src}
+                    width={768}
+                    height={576}
                     alt={`School image ${index + 1}`}
                     className='w-full h-64 object-cover rounded-lg'
                   />

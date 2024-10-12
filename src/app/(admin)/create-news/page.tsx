@@ -26,7 +26,8 @@ import {
 import { toast } from '@/hooks/use-toast'
 import { ROOT_API } from '@/common/config'
 import { postsService } from '@/services/posts.service'
-import { Upload, X } from 'lucide-react'
+import { X } from 'lucide-react'
+import Image from 'next/image'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -263,9 +264,11 @@ export default function CreateNewsPage() {
                 </FormDescription>
                 <FormMessage />
                 {previewImage && (
-                  <img
+                  <Image
                     src={previewImage}
                     alt='Preview'
+                    width={200}
+                    height={200}
                     className='mt-2 rounded-md max-w-xs'
                   />
                 )}
