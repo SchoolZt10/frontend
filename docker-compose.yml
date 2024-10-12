@@ -1,7 +1,7 @@
 version: '3'
 services:
-  frontend:
-    container_name: frontend
+  frontend_school:
+    container_name: frontend_school
     build: .
     ports:
       - "3001:3000"
