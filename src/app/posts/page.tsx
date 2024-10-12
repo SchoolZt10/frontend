@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import {
@@ -33,11 +33,13 @@ export default function PostsPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const searchParams = useSearchParams()
-
-  const currentCategory = searchParams.get('category') || 'all'
+  const [currentCategory, setCurrentCategory] = useState('all')
 
   useEffect(() => {
+    const searchParams = useSearchParams()
+
+    setCurrentCategory(searchParams.get('category') || 'all')
+
     const fetchPosts = async () => {
       try {
         const response = await fetch(`${ROOT_API}/posts`)
@@ -91,6 +93,9 @@ export default function PostsPage() {
       ? posts
       : posts.filter((post) => post.categoryId === currentCategory)
 
+  if (loading) {
+    return null
+  }
   return (
     <div className='container mx-auto px-4 py-8'>
       <h1 className='text-3xl font-bold mb-6'>Пости</h1>

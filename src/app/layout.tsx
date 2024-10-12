@@ -37,7 +37,6 @@ export default function RootLayout({
             <Menu />
           </div>
           <div className='h-full'>{children}</div>
-          <Footer />
         </div>
       </body>
     </html>
