@@ -119,56 +119,40 @@ export default function PostsPage() {
         </Select>
       </div>
 
-      {loading ? (
-        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-          {[...Array(6)].map((_, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <Skeleton className='h-4 w-[250px]' />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className='h-[200px] w-full' />
-                <Skeleton className='h-4 w-[200px] mt-4' />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-          {filteredPosts.map((post) => (
-            <Card key={post.id}>
-              <CardHeader>
-                <CardTitle>{post.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className='relative h-[200px] w-full mb-4'>
-                  {post.image && (
-                    <Image
-                      src={ROOT_CDN + post.image}
-                      alt={post.title}
-                      layout='fill'
-                      objectFit='cover'
-                      className='rounded-md'
-                    />
-                  )}
-                </div>
-                <p className='text-sm text-muted-foreground mb-2'>
-                  {post.createdAtLocale} | {post.categoryName}
-                </p>
-                <p className='line-clamp-3'>{post.content}</p>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant='outline'
-                  onClick={() => router.push(`/posts/${post.slug}`)}
-                >
-                  Читати далі
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      )}
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        {filteredPosts.map((post) => (
+          <Card key={post.id}>
+            <CardHeader>
+              <CardTitle>{post.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='relative h-[200px] w-full mb-4'>
+                {post.image && (
+                  <Image
+                    src={ROOT_CDN + post.image}
+                    alt={post.title}
+                    layout='fill'
+                    objectFit='cover'
+                    className='rounded-md'
+                  />
+                )}
+              </div>
+              <p className='text-sm text-muted-foreground mb-2'>
+                {post.createdAtLocale} | {post.categoryName}
+              </p>
+              <p className='line-clamp-3'>{post.content}</p>
+            </CardContent>
+            <CardFooter>
+              <Button
+                variant='outline'
+                onClick={() => router.push(`/posts/${post.slug}`)}
+              >
+                Читати далі
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
 
       {!loading && filteredPosts.length === 0 && (
         <p className='text-center text-muted-foreground'>
