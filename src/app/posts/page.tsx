@@ -34,12 +34,13 @@ export default function PostsPage() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const [currentCategory, setCurrentCategory] = useState('all')
+  const searchParams = useSearchParams()
 
   useEffect(() => {
-    const searchParams = useSearchParams()
-
     setCurrentCategory(searchParams.get('category') || 'all')
+  }, [searchParams])
 
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(`${ROOT_API}/posts`)
@@ -154,7 +155,7 @@ export default function PostsPage() {
         ))}
       </div>
 
-      {!loading && filteredPosts.length === 0 && (
+      {filteredPosts.length === 0 && (
         <p className='text-center text-muted-foreground'>
           Немає постів для відображення.
         </p>
