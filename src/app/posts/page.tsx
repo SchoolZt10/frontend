@@ -34,11 +34,18 @@ export default function PostsPage() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const [currentCategory, setCurrentCategory] = useState('all')
+  const [filteredPosts, setFilteredPosts] = useState<IPost[]>([])
   const searchParams = useSearchParams()
 
   useEffect(() => {
     setCurrentCategory(searchParams.get('category') || 'all')
-  }, [searchParams])
+    setFilteredPosts(
+      currentCategory === 'all'
+        ? posts
+        : posts.filter((post) => post.categoryId === currentCategory)
+    )
+
+  }, [searchParams, currentCategory, posts])
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -88,11 +95,6 @@ export default function PostsPage() {
   const handleCategoryChange = (value: string) => {
     router.push(`/posts${value !== 'all' ? `?category=${value}` : ''}`)
   }
-
-  const filteredPosts =
-    currentCategory === 'all'
-      ? posts
-      : posts.filter((post) => post.categoryId === currentCategory)
 
   if (loading) {
     return null
