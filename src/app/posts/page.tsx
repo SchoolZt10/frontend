@@ -25,6 +25,7 @@ import { postsService } from '@/services/posts.service'
 export default function PostsPage() {
   const router = useRouter()
   const [currentCategory, setCurrentCategory] = useState('all')
+  const [filteredPosts, setFilteredPosts] = useState<IPost[]>([])
   const searchParams = useSearchParams()
 
   const { data: posts } = postsService.useQueryPosts()
@@ -33,16 +34,16 @@ export default function PostsPage() {
 
   useEffect(() => {
     setCurrentCategory(searchParams.get('category') || 'all')
-  }, [searchParams])
+    setFilteredPosts(
+      currentCategory === 'all'
+        ? posts
+        : posts.filter((post) => post.categoryId === currentCategory)
+    )
+  }, [searchParams, currentCategory, posts])
 
   const handleCategoryChange = (value: string) => {
     router.push(`/posts${value !== 'all' ? `?category=${value}` : ''}`)
   }
-
-  const filteredPosts =
-    currentCategory === 'all'
-      ? posts
-      : posts.filter((post) => post.categoryId === currentCategory)
 
   if (!posts || !categories) {
     return (
