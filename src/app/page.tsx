@@ -36,9 +36,9 @@ export default function SchoolWebsite() {
           <Carousel className='w-full max-w-xl mx-auto'>
             <CarouselContent>
               {[
-                'https://cdn.shooclzt10.site/IMG_1225-768x536.jpg',
-                'https://cdn.shooclzt10.site/0-02-05-e8d262988d9452b4b5850b20fa2e39c0e2c31ce45ffc35860c292584b6fe3551_291cd7cbac31b6f5-768x576.jpg',
-                'https://cdn.shooclzt10.site/IMG_20210512_094103-768x737.jpg',
+                'https://cdn.shooclzt10.site/IMG_1225-768x536.webp',
+                'https://cdn.shooclzt10.site/0-02-05-e8d262988d9452b4b5850b20fa2e39c0e2c31ce45ffc35860c292584b6fe3551_291cd7cbac31b6f5-768x576.webp',
+                'https://cdn.shooclzt10.site/IMG_20210512_094103-768x737.webp',
               ].map((src, index) => (
                 <CarouselItem key={index}>
                   <Image
