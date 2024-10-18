@@ -1,7 +1,16 @@
+'use client'
+import { ROOT_CDN } from '@/common/config'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { Menu } from '@/components/menu'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Carousel,
   CarouselContent,
@@ -9,10 +18,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import { Skeleton } from '@/components/ui/skeleton'
+import { postsService } from '@/services/posts.service'
 import { MapPin, Clock, Phone, Mail } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function SchoolWebsite() {
+  const router = useRouter()
+  const { data: posts, isLoading } = postsService.useQueryPosts()
+
   return (
     <>
       <div className='container mx-auto px-4 py-8'>
@@ -21,9 +36,9 @@ export default function SchoolWebsite() {
           <Carousel className='w-full max-w-xl mx-auto'>
             <CarouselContent>
               {[
-                'http://newztschool10.zzz.com.ua/wp-content/uploads/2018/03/IMG_1225-768x536.jpg',
-                'http://newztschool10.zzz.com.ua/wp-content/uploads/2022/10/0-02-05-e8d262988d9452b4b5850b20fa2e39c0e2c31ce45ffc35860c292584b6fe3551_291cd7cbac31b6f5-768x576.jpg',
-                'http://newztschool10.zzz.com.ua/wp-content/uploads/2022/10/IMG_20210512_094103-768x737.jpg',
+                'https://cdn.shooclzt10.site/IMG_1225-768x536.jpg',
+                'https://cdn.shooclzt10.site/0-02-05-e8d262988d9452b4b5850b20fa2e39c0e2c31ce45ffc35860c292584b6fe3551_291cd7cbac31b6f5-768x576.jpg',
+                'https://cdn.shooclzt10.site/IMG_20210512_094103-768x737.jpg',
               ].map((src, index) => (
                 <CarouselItem key={index}>
                   <Image
@@ -39,6 +54,67 @@ export default function SchoolWebsite() {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+        </section>
+        <section className='mb-4'>
+          <h2 className='text-2xl font-semibold mb-4'>Останні новини</h2>
+          {isLoading && (
+            <div className='container mx-auto px-4 py-8'>
+              <h1 className='text-3xl font-bold mb-6'>Пости</h1>
+              <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+                {[...Array(3)].map((_, index) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <Skeleton className='h-[20px] w-[200px]' />
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className='h-[250px]' />
+                      <Skeleton className='h-[20px] w-[150px]' />
+                      <Skeleton className='h-[20px] w-[100px]' />
+                      <Skeleton className='h-[40px]' />
+                    </CardContent>
+                    <CardFooter>
+                      <Skeleton className='h-[20px] w-[100px]' />
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            {!isLoading &&
+              posts?.slice(0, 3).map((post) => (
+                <Card key={post.id}>
+                  <CardHeader>
+                    <CardTitle>{post.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='relative h-[250px] w-full mb-4'>
+                      {post.image && (
+                        <Image
+                          src={ROOT_CDN + post.image}
+                          alt={post.title}
+                          layout='fill'
+                          objectFit='cover'
+                          className='rounded-md'
+                        />
+                      )}
+                    </div>
+                    <p className='text-sm text-muted-foreground mb-2'>
+                      {post.createdAtLocale} | {post.categoryName}
+                    </p>
+                    <p className='line-clamp-3'>{post.content}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      variant='outline'
+                      onClick={() => router.push(`/posts/${post.slug}`)}
+                    >
+                      Читати далі
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
         </section>
         <div>
           <h2 className='text-2xl font-semibold mb-4'>Новини нашої школи</h2>
