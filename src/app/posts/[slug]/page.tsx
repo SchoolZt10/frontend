@@ -17,15 +17,5 @@ export default async function PostPage({ params: { slug } }: PostPageProps) {
     }
   }
 
-  const categories = await fetch(`${ROOT_API}/posts/categories`, {
-    next: { revalidate: 300 },
-  }).then((res) => res.json())
-
-  const otherPosts = await fetch(`${ROOT_API}/posts`, {
-    next: { revalidate: 30 },
-  }).then((res) => res.json())
-
-  return (
-    <BlogPost post={post} categories={categories} otherPosts={otherPosts} />
-  )
+  return <BlogPost post={post} />
 }

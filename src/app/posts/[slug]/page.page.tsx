@@ -10,48 +10,34 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ROOT_API, ROOT_CDN } from '@/common/config'
 import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
+import { postsService } from '@/services/posts.service'
 
 interface BlogPostProps {
   post: IPost
-  categories: ICategory[]
-  otherPosts: IPost[]
 }
 
-export default function BlogPost({
-  post: initialPost,
-  categories: initialCategories,
-  otherPosts: initialOtherPosts,
-}: BlogPostProps) {
-  const { slug } = useParams()
-  const [post, setPost] = useState<IPost>(initialPost)
-  const [comments, setComments] = useState<IComment[]>([])
-  const [categories, setCategories] = useState<ICategory[]>(initialCategories)
+export default function BlogPost({ post: initialPost }: BlogPostProps) {
+  const [post] = useState<IPost>(initialPost)
   const [otherPosts, setOtherPosts] = useState<IPost[]>()
   const [newComment, setNewComment] = useState({
     username: '',
     email: '',
     comment: '',
   })
+  const queryClient = useQueryClient()
+
+  const { data: categories } = postsService.useQueryCategories()
+
+  const { data: posts } = postsService.useQueryPosts()
+
+  const { data: comments } = postsService.useQueryComments(post.id)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const commentsResponse = await fetch(`${ROOT_API}/comments/${post.id}`)
-        const commentsData = await commentsResponse.json()
-        setComments(commentsData)
+    const filtredPostsData = posts.filter((p: IPost) => p.id !== post.id)
 
-        const filtredPostsData = initialOtherPosts.filter(
-          (p: IPost) => p.id !== post.id
-        )
-
-        setOtherPosts(filtredPostsData.slice(0, 5))
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData()
-  }, [slug])
+    setOtherPosts(filtredPostsData.slice(0, 5))
+  }, [posts])
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,8 +53,9 @@ export default function BlogPost({
         }),
       })
       if (response.ok) {
-        const newCommentData = await response.json()
-        setComments([...comments, newCommentData])
+        await queryClient.invalidateQueries({
+          queryKey: ['comments', post.id],
+        })
         setNewComment({ username: '', email: '', comment: '' })
       }
     } catch (error) {
@@ -189,12 +176,12 @@ export default function BlogPost({
                 <ul className='space-y-2'>
                   {otherPosts.map((otherPost) => (
                     <li key={otherPost.id}>
-                      <a
+                      <Link
                         href={`/posts/${otherPost.slug}`}
                         className='hover:underline'
                       >
                         {otherPost.title}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

@@ -4,6 +4,7 @@ import './globals.css'
 import { Menu } from '@/components/menu'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import ReactQueryProvider from '@/providers/react-query'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,13 +32,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className='flex flex-col h-screen justify-between'>
-          <div>
-            <Header />
-            <Menu />
+        <ReactQueryProvider>
+          <div className='flex flex-col h-screen justify-between'>
+            <div>
+              <Header />
+              <Menu />
+            </div>
+            <div className='h-full'>{children}</div>
           </div>
-          <div className='h-full'>{children}</div>
-        </div>
+        </ReactQueryProvider>
       </body>
     </html>
   )

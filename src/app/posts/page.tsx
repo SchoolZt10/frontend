@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import {
@@ -19,23 +19,18 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { toast } from '@/hooks/use-toast'
-import { ROOT_API, ROOT_CDN } from '@/common/config'
-
-type Category = {
-  id: string
-  name: string
-  createdAt: string
-}
+import { ROOT_CDN } from '@/common/config'
+import { postsService } from '@/services/posts.service'
 
 export default function PostsPage() {
-  const [posts, setPosts] = useState<IPost[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
   const [currentCategory, setCurrentCategory] = useState('all')
   const [filteredPosts, setFilteredPosts] = useState<IPost[]>([])
   const searchParams = useSearchParams()
+
+  const { data: posts } = postsService.useQueryPosts()
+
+  const { data: categories } = postsService.useQueryCategories()
 
   useEffect(() => {
     setCurrentCategory(searchParams.get('category') || 'all')
@@ -44,61 +39,38 @@ export default function PostsPage() {
         ? posts
         : posts.filter((post) => post.categoryId === currentCategory)
     )
-
   }, [searchParams, currentCategory, posts])
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`${ROOT_API}/posts`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts')
-        }
-        const data: IPost[] = await response.json()
-        setPosts(data)
-      } catch (error) {
-        console.error('Error fetching posts:', error)
-        toast({
-          title: 'Помилка',
-          description:
-            'Не вдалося завантажити пости. Будь ласка, спробуйте оновити сторінку.',
-          variant: 'destructive',
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`${ROOT_API}/posts/categories`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories')
-        }
-        const data: Category[] = await response.json()
-        setCategories(data)
-      } catch (error) {
-        console.error('Error fetching categories:', error)
-        toast({
-          title: 'Помилка',
-          description:
-            'Не вдалося завантажити категорії. Будь ласка, спробуйте оновити сторінку.',
-          variant: 'destructive',
-        })
-      }
-    }
-
-    fetchPosts()
-    fetchCategories()
-  }, [])
 
   const handleCategoryChange = (value: string) => {
     router.push(`/posts${value !== 'all' ? `?category=${value}` : ''}`)
   }
 
-  if (loading) {
-    return null
+  if (!posts || !categories) {
+    return (
+      <div className='container mx-auto px-4 py-8'>
+        <h1 className='text-3xl font-bold mb-6'>Пости</h1>
+        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+          {[...Array(6)].map((_, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <Skeleton className='h-[20px] w-[200px]' />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className='h-[250px]' />
+                <Skeleton className='h-[20px] w-[150px]' />
+                <Skeleton className='h-[20px] w-[100px]' />
+                <Skeleton className='h-[40px]' />
+              </CardContent>
+              <CardFooter>
+                <Skeleton className='h-[20px] w-[100px]' />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
   }
+
   return (
     <div className='container mx-auto px-4 py-8'>
       <h1 className='text-3xl font-bold mb-6'>Пости</h1>
@@ -129,7 +101,7 @@ export default function PostsPage() {
               <CardTitle>{post.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='relative h-[200px] w-full mb-4'>
+              <div className='relative h-[250px] w-full mb-4'>
                 {post.image && (
                   <Image
                     src={ROOT_CDN + post.image}
