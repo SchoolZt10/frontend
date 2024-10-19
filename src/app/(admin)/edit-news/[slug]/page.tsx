@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -24,15 +24,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from '@/hooks/use-toast'
+import { ROOT_API } from '@/common/config'
 import { postsService } from '@/services/posts.service'
 import { X } from 'lucide-react'
 import Image from 'next/image'
-import { formSchema } from '../base/base'
+import { useParams } from 'next/navigation'
+import { formSchema } from '../../base/base'
 
-export default function CreateNewsPage() {
+export default function EditNewsPost() {
+  const { slug } = useParams<{ slug: string }>()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const { data: categories } = postsService.useQueryCategories()
+  const { data: post, isLoading } = postsService.useQueryPost(slug)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +49,7 @@ export default function CreateNewsPage() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!post) return
     setIsSubmitting(true)
     try {
       const formData = new FormData()
@@ -53,11 +58,11 @@ export default function CreateNewsPage() {
       formData.append('categoryId', values.categoryId)
       formData.append('image', values.image[0])
 
-      const post = await postsService.createPost(formData)
-      console.log(post)
+      const updatedPost = await postsService.updatePost(post.id, formData)
+      console.log(updatedPost)
       toast({
-        title: 'Новину успішно створено',
-        description: 'Ваша новина була успішно опублікована.',
+        title: 'Новину успішно відредаговано',
+        description: 'Ваша новина була успішно відредагована.',
       })
       form.reset({
         title: '',
@@ -69,7 +74,7 @@ export default function CreateNewsPage() {
     } catch (error) {
       toast({
         title: 'Помилка',
-        description: 'Не вдалося створити новину. Спробуйте ще раз.',
+        description: 'Не вдалося відрегувати новину. Спробуйте ще раз.',
         variant: 'destructive',
       })
     } finally {
@@ -90,9 +95,17 @@ export default function CreateNewsPage() {
     }
   }
 
+  if (!isLoading && !post) {
+    return (
+      <>
+        <div>Не знайдено пост!</div>
+      </>
+    )
+  }
+
   return (
     <div className='container mx-auto px-4 py-8'>
-      <h1 className='text-3xl font-bold mb-6'>Створити нову публікацію</h1>
+      <h1 className='text-3xl font-bold mb-6'>Відрегувати публікацію</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <FormField

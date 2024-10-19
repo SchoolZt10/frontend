@@ -10,6 +10,11 @@ export function Menu() {
           </Link>
         </li>
         <li>
+          <Link href='/history' className='text-blue-500 hover:underline'>
+            Історія Ліцею
+          </Link>
+        </li>
+        <li>
           <Link href='/posts' className='text-blue-500 hover:underline'>
             Пости
           </Link>

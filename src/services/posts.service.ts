@@ -11,6 +11,15 @@ class PostsService {
     return await response.json()
   }
 
+  async updatePost(id: string, formData: FormData): Promise<IPost> {
+    const response = await fetch(`${ROOT_API}/posts/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    })
+
+    return await response.json()
+  }
+
   useQueryPosts() {
     return useQuery({
       queryKey: ['posts'],
