@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from '@/hooks/use-toast'
-import { ROOT_API } from '@/common/config'
+import { ROOT_API, ROOT_CDN } from '@/common/config'
 import { postsService } from '@/services/posts.service'
 import { X } from 'lucide-react'
 import Image from 'next/image'
@@ -41,9 +41,9 @@ export default function EditNewsPost() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      content: '',
-      categoryId: '',
+      title: post?.title,
+      content: post?.content,
+      categoryId: post?.categoryId ? post?.categoryId : undefined,
       image: undefined,
     },
   })
@@ -55,8 +55,8 @@ export default function EditNewsPost() {
       const formData = new FormData()
       formData.append('title', values.title)
       formData.append('content', values.content)
-      formData.append('categoryId', values.categoryId)
-      formData.append('image', values.image[0])
+      values.image[0] && formData.append('image', values.image[0])
+      values.categoryId && formData.append('categoryId', values.categoryId)
 
       const updatedPost = await postsService.updatePost(post.id, formData)
       console.log(updatedPost)
@@ -210,9 +210,9 @@ export default function EditNewsPost() {
                   Завантажте зображення для новини (максимальний розмір: 5MB)
                 </FormDescription>
                 <FormMessage />
-                {previewImage && (
+                {(previewImage || post?.image) && (
                   <Image
-                    src={previewImage}
+                    src={previewImage || ROOT_CDN + post?.image}
                     alt='Preview'
                     width={200}
                     height={200}
