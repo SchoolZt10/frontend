@@ -51,8 +51,8 @@ export default function SchoolWebsite() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious className='hidden sm:flex' />
+            <CarouselNext className='hidden sm:flex' />
           </Carousel>
         </section>
         <section className='mb-4'>

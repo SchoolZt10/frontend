@@ -94,14 +94,14 @@ export default function PostsPage() {
         </Select>
       </div>
 
-      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='flex flex-col sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {filteredPosts.map((post) => (
           <Card key={post.id}>
             <CardHeader>
               <CardTitle>{post.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className='relative h-[250px] w-full mb-4'>
+              <div className='relative h-[250px] mb-4'>
                 {post.image && (
                   <Image
                     src={ROOT_CDN + post.image}
