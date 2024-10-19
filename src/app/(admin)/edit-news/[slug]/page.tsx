@@ -41,12 +41,21 @@ export default function EditNewsPost() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: '',
+      content: '',
+      categoryId: undefined,
+      image: undefined,
+    },
+  })
+
+  useEffect(() => {
+    form.reset({
       title: post?.title,
       content: post?.content,
       categoryId: post?.categoryId ? post?.categoryId : undefined,
       image: undefined,
-    },
-  })
+    })
+  }, [post])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!post) return
