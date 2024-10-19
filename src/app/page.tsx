@@ -20,8 +20,9 @@ import {
 } from '@/components/ui/carousel'
 import { Skeleton } from '@/components/ui/skeleton'
 import { postsService } from '@/services/posts.service'
-import { MapPin, Clock, Phone, Mail } from 'lucide-react'
+import { MapPin, Clock, Phone, Mail, Facebook } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function SchoolWebsite() {
@@ -33,7 +34,7 @@ export default function SchoolWebsite() {
       <div className='container mx-auto px-4 py-8'>
         <section className='mb-12'>
           <h2 className='text-2xl font-semibold mb-4'>Галерея</h2>
-          <Carousel className='w-full max-w-xl mx-auto'>
+          <Carousel className='w-full max-w-[640px] mx-auto'>
             <CarouselContent>
               {[
                 'https://cdn.shooclzt10.site/IMG_1225-768x536.webp',
@@ -43,10 +44,10 @@ export default function SchoolWebsite() {
                 <CarouselItem key={index}>
                   <Image
                     src={src}
-                    width={768}
-                    height={576}
+                    width={1280}
+                    height={720}
                     alt={`School image ${index + 1}`}
-                    className='w-full h-64 object-cover rounded-lg'
+                    className='w-[640px] h-[360px] object-cover rounded-lg'
                   />
                 </CarouselItem>
               ))}
@@ -56,7 +57,9 @@ export default function SchoolWebsite() {
           </Carousel>
         </section>
         <section className='mb-4'>
-          <h2 className='text-2xl font-semibold mb-4'>Останні новини</h2>
+          <h2 className='text-2xl font-semibold mb-4'>
+            Останні новини нашої школи
+          </h2>
           {isLoading && (
             <div className='container mx-auto px-4 py-8'>
               <h1 className='text-3xl font-bold mb-6'>Пости</h1>
@@ -116,11 +119,7 @@ export default function SchoolWebsite() {
               ))}
           </div>
         </section>
-        <div>
-          <h2 className='text-2xl font-semibold mb-4'>Новини нашої школи</h2>
-          <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'></div>
-        </div>
-        <div className='grid md:grid-cols-2 gap-8'>
+        <section className='grid md:grid-cols-3 gap-8'>
           <Card>
             <CardContent className='p-6'>
               <h2 className='text-2xl font-semibold mb-4 flex items-center'>
@@ -151,9 +150,15 @@ export default function SchoolWebsite() {
               <p className='flex items-center mt-2'>
                 <Mail className='mr-2' /> ztschool10@gmail.com
               </p>
+              <Link href={'https://www.facebook.com/lyceum10zt/'}>
+                <Button className='bg-blue-500 hover:bg-blue-400 mt-3'>
+                  <Facebook />
+                  <span className='ml-2'>Facebook</span>
+                </Button>
+              </Link>
             </CardContent>
           </Card>
-        </div>
+        </section>
       </div>
     </>
   )
