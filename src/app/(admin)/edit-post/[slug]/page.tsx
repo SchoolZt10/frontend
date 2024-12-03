@@ -30,8 +30,10 @@ import { X } from 'lucide-react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { formSchema } from '../../base/base'
+import { useUser } from '@/providers/user.provider'
 
 export default function EditNewsPost() {
+  const { user } = useUser()
   const { slug } = useParams<{ slug: string }>()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
@@ -110,6 +112,10 @@ export default function EditNewsPost() {
         <div>Не знайдено пост!</div>
       </>
     )
+  }
+
+  if (user?.id != post?.userId) {
+    return <></>
   }
 
   return (

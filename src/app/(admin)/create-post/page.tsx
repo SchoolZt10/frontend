@@ -23,11 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { toast } from '@/hooks/use-toast'
 import { postsService } from '@/services/posts.service'
 import { X } from 'lucide-react'
 import Image from 'next/image'
 import { formSchema } from '../base/base'
+import { toast } from 'sonner'
 
 export default function CreateNewsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,10 +55,7 @@ export default function CreateNewsPage() {
 
       const post = await postsService.createPost(formData)
       console.log(post)
-      toast({
-        title: 'Новину успішно створено',
-        description: 'Ваша новина була успішно опублікована.',
-      })
+      toast('Новину успішно створено')
       form.reset({
         title: '',
         content: '',
@@ -67,10 +64,8 @@ export default function CreateNewsPage() {
       })
       setPreviewImage(null)
     } catch (error) {
-      toast({
-        title: 'Помилка',
+      toast('Помилка', {
         description: 'Не вдалося створити новину. Спробуйте ще раз.',
-        variant: 'destructive',
       })
     } finally {
       setIsSubmitting(false)

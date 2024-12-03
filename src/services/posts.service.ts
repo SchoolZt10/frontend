@@ -1,11 +1,14 @@
 import { ROOT_API } from "@/common/config";
 import { useQuery } from "@tanstack/react-query";
-
+import Cookies from "js-cookie";
 class PostsService {
   async createPost(formData: FormData): Promise<IPost> {
     const response = await fetch(`${ROOT_API}/posts`, {
       method: 'POST',
       body: formData,
+      headers: {
+        authorization: `Bearer ${Cookies.get('accessToken')}`,
+      }
     })
 
     return await response.json()
@@ -15,9 +18,21 @@ class PostsService {
     const response = await fetch(`${ROOT_API}/posts/${id}`, {
       method: 'PATCH',
       body: formData,
+      headers: {
+        authorization: `Bearer ${Cookies.get('accessToken')}`,
+      }
     })
 
     return await response.json()
+  }
+
+  async deletePost(id: string): Promise<void> {
+    await fetch(`${ROOT_API}/posts/${id}`, {
+      method: 'DELETE',
+      headers: {
+        authorization: `Bearer ${Cookies.get('accessToken')}`,
+      }
+    })
   }
 
   useQueryPosts() {

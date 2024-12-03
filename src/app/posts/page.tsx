@@ -21,9 +21,12 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ROOT_CDN } from '@/common/config'
 import { postsService } from '@/services/posts.service'
+import { useUser } from '@/providers/user.provider'
+import Link from 'next/link'
 
 export default function PostsPage() {
   const router = useRouter()
+  const { user } = useUser()
   const [currentCategory, setCurrentCategory] = useState('all')
   const [filteredPosts, setFilteredPosts] = useState<IPost[]>([])
   const searchParams = useSearchParams()
@@ -75,7 +78,7 @@ export default function PostsPage() {
     <div className='container mx-auto px-4 py-8'>
       <h1 className='text-3xl font-bold mb-6'>Пости</h1>
 
-      <div className='mb-6'>
+      <div className='mb-6 flex items-center'>
         <Select
           onValueChange={handleCategoryChange}
           defaultValue={currentCategory}
@@ -92,6 +95,11 @@ export default function PostsPage() {
             ))}
           </SelectContent>
         </Select>
+        {user && (
+          <Link href='/create-post'>
+            <Button variant={'link'}>Додати пост</Button>
+          </Link>
+        )}
       </div>
 
       <div className='flex flex-col sm:grid gap-6 md:grid-cols-2 lg:grid-cols-3'>

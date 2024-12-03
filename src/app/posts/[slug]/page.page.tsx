@@ -12,17 +12,20 @@ import { ROOT_API, ROOT_CDN } from '@/common/config'
 import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'
 import { postsService } from '@/services/posts.service'
+import { useUser } from '@/providers/user.provider'
+import Cookies from 'js-cookie'
+import { Delete, Edit } from 'lucide-react'
+import DeletePostModal from './delete-post-modal'
 
 interface BlogPostProps {
   post: IPost
 }
 
 export default function BlogPost({ post: initialPost }: BlogPostProps) {
+  const { user } = useUser()
   const [post] = useState<IPost>(initialPost)
   const [otherPosts, setOtherPosts] = useState<IPost[]>()
   const [newComment, setNewComment] = useState({
-    username: '',
-    email: '',
     comment: '',
   })
   const queryClient = useQueryClient()
@@ -46,6 +49,7 @@ export default function BlogPost({ post: initialPost }: BlogPostProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          authorization: `Bearer ${Cookies.get('accessToken')}`,
         },
         body: JSON.stringify({
           ...newComment,
@@ -56,7 +60,7 @@ export default function BlogPost({ post: initialPost }: BlogPostProps) {
         await queryClient.invalidateQueries({
           queryKey: ['comments', post.id],
         })
-        setNewComment({ username: '', email: '', comment: '' })
+        setNewComment({ comment: '' })
       }
     } catch (error) {
       console.error('Error submitting comment:', error)
@@ -84,6 +88,17 @@ export default function BlogPost({ post: initialPost }: BlogPostProps) {
                 className='w-full h-auto mb-4 rounded-lg'
               />
               <div className='whitespace-pre-line'>{post.content}</div>
+              {user && user.id == post.userId && (
+                <div className='flex gap-2 items-center'>
+                  <Link href={`/edit-post/${post.slug}`}>
+                    <Button className='mt-4'>
+                      <Edit size={16} className='mr-2' />
+                      Редагувати
+                    </Button>
+                  </Link>
+                  <DeletePostModal postId={post.id} postTitle={post.title} />
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -95,7 +110,7 @@ export default function BlogPost({ post: initialPost }: BlogPostProps) {
           {comments.map((comment) => (
             <Card key={comment.id} className='mb-4'>
               <CardHeader>
-                <CardTitle className='text-lg'>{comment.username}</CardTitle>
+                <CardTitle className='text-lg'>{comment.user.name}</CardTitle>
                 <p className='text-sm text-muted-foreground'>
                   {comment.createdAt}
                 </p>
@@ -105,42 +120,35 @@ export default function BlogPost({ post: initialPost }: BlogPostProps) {
               </CardContent>
             </Card>
           ))}
-
-          <Card className='mt-8'>
-            <CardHeader>
-              <CardTitle>Додати коментар</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleCommentSubmit} className='space-y-4'>
-                <Input
-                  placeholder="Ім'я"
-                  value={newComment.username}
-                  onChange={(e) =>
-                    setNewComment({ ...newComment, username: e.target.value })
-                  }
-                  required
-                />
-                <Input
-                  type='email'
-                  placeholder='Email'
-                  value={newComment.email}
-                  onChange={(e) =>
-                    setNewComment({ ...newComment, email: e.target.value })
-                  }
-                  required
-                />
-                <Textarea
-                  placeholder='Ваш коментар'
-                  value={newComment.comment}
-                  onChange={(e) =>
-                    setNewComment({ ...newComment, comment: e.target.value })
-                  }
-                  required
-                />
-                <Button type='submit'>Відправити коментар</Button>
-              </form>
-            </CardContent>
-          </Card>
+          {(user && (
+            <Card className='mt-8'>
+              <CardHeader>
+                <CardTitle>Додати коментар</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleCommentSubmit} className='space-y-4'>
+                  <Textarea
+                    placeholder='Ваш коментар'
+                    value={newComment.comment}
+                    onChange={(e) =>
+                      setNewComment({ ...newComment, comment: e.target.value })
+                    }
+                    required
+                  />
+                  <Button type='submit'>Відправити коментар</Button>
+                </form>
+              </CardContent>
+            </Card>
+          )) || (
+            <Card className='mt-8'>
+              <CardHeader>
+                <CardTitle>Додати коментар</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>Увійдіть, щоб залишити коментар</p>
+              </CardContent>
+            </Card>
+          )}
         </main>
 
         <aside className='w-full md:w-1/3 space-y-8'>

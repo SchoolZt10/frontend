@@ -8,6 +8,7 @@ interface IPost {
   categoryId: string | null
   categoryName: string | null
   createdAtLocale: string
+  userId: number
 }
 
 interface IPostCreate {

@@ -1,8 +1,8 @@
 'use client'
 import { ROOT_CDN } from '@/common/config'
 import { Footer } from '@/components/footer'
-import { Header } from '@/components/header'
-import { Menu } from '@/components/menu'
+import { Header } from '@/components/header/header'
+import { Menu } from '@/components/header/menu'
 import { Button } from '@/components/ui/button'
 import {
   Card,
