@@ -20,6 +20,7 @@ import { loginUser } from './actions'
 import { useMutation } from '@tanstack/react-query'
 import { useUser } from '@/providers/user.provider'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function AuthForm() {
   const [email, setEmail] = useState('')
@@ -115,7 +116,9 @@ export default function AuthForm() {
         </CardContent>
         <CardFooter className='flex justify-center'>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant='link'>Створити обліковий запис</Button>
+            <Link href={'/sign-up'}>
+              <Button variant='link'>Створити обліковий запис</Button>
+            </Link>
           </motion.div>
         </CardFooter>
       </Card>
