@@ -10,6 +10,9 @@ export default async function ConfirmEmail({
     token: string
   }
 }) {
+  console.log('searchParams.token')
+
+  console.log(searchParams.token)
   useEffect(() => {
     confirmEmail(searchParams.token)
   }, [])
