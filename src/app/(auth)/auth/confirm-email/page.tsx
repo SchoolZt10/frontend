@@ -15,6 +15,8 @@ export default function ConfirmEmail({
   useEffect(() => {
     const token = searchParams.token
 
+    if (!token) return
+
     const fetchData = async () => {
       const responseConfrimMail = await fetch(
         `${ROOT_API}/auth/confirm/${token}`,
@@ -41,7 +43,7 @@ export default function ConfirmEmail({
       return data
     }
     fetchData()
-  }, [])
+  }, [searchParams.token])
 
   return <div>Підтвердження...</div>
 }
