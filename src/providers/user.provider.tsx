@@ -24,6 +24,9 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = React.useState<boolean>(true)
 
   const fetchUser = async () => {
+    if (!Cookies.get('accessToken')) {
+      return undefined
+    }
     const response = await fetch(`${ROOT_API}/users/me`, {
       method: 'GET',
       headers: {
