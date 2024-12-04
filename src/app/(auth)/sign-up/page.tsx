@@ -112,7 +112,7 @@ export default function SignUpForm() {
             transition={{ delay: 0.5 }}
             className='w-full text-center'
           >
-            <a href='/login' className='text-sm text-primary hover:underline'>
+            <a href='/sign-in' className='text-sm text-primary hover:underline'>
               Вже маєте акаунт? Авторизуватися
             </a>
           </motion.div>
