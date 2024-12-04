@@ -4,17 +4,14 @@ import { confirmEmail } from '@/app/actions'
 import { ROOT_API } from '@/common/config'
 import { useEffect } from 'react'
 import Cookies from 'js-cookie'
+import { useSearchParams } from 'next/navigation'
 
-export default function ConfirmEmail({
-  searchParams,
-}: {
-  searchParams: {
-    token: string
-  }
-}) {
+export default function ConfirmEmail() {
+  const searchParams = useSearchParams()
+
+  const token = searchParams.get('token')
+
   useEffect(() => {
-    const token = searchParams.token
-
     if (!token) return
 
     const fetchData = async () => {
@@ -43,7 +40,7 @@ export default function ConfirmEmail({
       return data
     }
     fetchData()
-  }, [searchParams.token])
+  }, [token])
 
   return <div>Підтвердження...</div>
 }
