@@ -47,7 +47,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     Cookies.remove('accessToken')
-    setUser({} as IUser)
+    setUser(undefined)
   }
 
   const refetch = () => {
